@@ -239,22 +239,8 @@ classdef ZdjecieSEM < handle
         najwiekszaSrednica = round(max(D));
         
         for i=1:N, C(i,:)=RP(i).Centroid+najwiekszaSrednica; end
-         obj.wysokosc = obj.pokazWysokosc()+najwiekszaSrednica*2+1;
-         obj.szerokosc = obj.pokazSzerokosc()+najwiekszaSrednica*2+1;
-         bwbuf = zeros(obj.pokazWysokosc(), obj.pokazSzerokosc());
-         try
-             for h=najwiekszaSrednica+1:obj.pokazWysokosc()
-                 for w=najwiekszaSrednica+1:obj.pokazSzerokosc()
-                     if h>2*najwiekszaSrednica+1 && w>2*najwiekszaSrednica+1
-                         bwbuf(h-najwiekszaSrednica-1,w-najwiekszaSrednica-1) =...
-                         bw(h-2*najwiekszaSrednica-1, w-2*najwiekszaSrednica-1);
-                     end
-                 end
-             end
-         catch ME
-            obj.wysokosc = wysBuf;
-            obj.szerokosc = szerBuf;
-         end
+         bwbuf = zwiekszWymiaryObrazu(obj, bw, najwiekszaSrednica);
+             
          bw = bwbuf;
          for i=1:N, RP(i).PixelList = RP(i).PixelList+najwiekszaSrednica; end
          bwkopia = bw;
@@ -306,13 +292,6 @@ classdef ZdjecieSEM < handle
         medianaSrednic = median(D);
         mnoznik = zeros(N,1);
         for i=1:N
-%             if D(i) < medianaSrednic
-%                 mnoznik(i) = 1;
-%             else
-%                 %mnoznik(i) = round(sqrt(D(i)/medianaSrednic));
-%                 mnoznik(i) = round(D(i)/medianaSrednic);
-%                 %mnoznik(i) = 1;
-%             end
             mnoznik(i) = sqrt(D(i));
         end
         if obj.pokazWysokosc() > obj.pokazSzerokosc()
@@ -321,27 +300,11 @@ classdef ZdjecieSEM < handle
             wiekszyBok = obj.pokazSzerokosc(); 
         end
 
-        
         for i=1:N, C(i,:)=RP(i).Centroid+wiekszyBok; end
-         obj.wysokosc = obj.pokazWysokosc()+wiekszyBok*2+1;
-         obj.szerokosc = obj.pokazSzerokosc()+wiekszyBok*2+1;
-         bwbuf = zeros(obj.pokazWysokosc(), obj.pokazSzerokosc());
-         try
-             for h=wiekszyBok+1:obj.pokazWysokosc()
-                 for w=wiekszyBok+1:obj.pokazSzerokosc()
-                     if h>2*wiekszyBok+1 && w>2*wiekszyBok+1
-                         bwbuf(h-wiekszyBok-1,w-wiekszyBok-1) =...
-                         bw(h-2*wiekszyBok-1, w-2*wiekszyBok-1);
-                     end
-                 end
-             end
-         catch ME
-            obj.wysokosc = wysBuf;
-            obj.szerokosc = szerBuf;
-         end
-         bw = bwbuf;
-         for i=1:N, RP(i).PixelList = RP(i).PixelList+wiekszyBok-1; end
-         bwkopia = bw;
+        bwbuf = zwiekszWymiaryObrazu(obj, bw, wiekszyBok);
+        bw = bwbuf;
+        for i=1:N, RP(i).PixelList = RP(i).PixelList+wiekszyBok-1; end
+        bwkopia = bw;
         for i=1:N
             jbuf = floor(D(i)/2);
                 if obj.rysowaneFigury == "Kwadraty"
@@ -652,6 +615,20 @@ classdef ZdjecieSEM < handle
         %parametry d i e odpowiadaja za grubosc linii dzielacych
         %parametry a, b i c odpowiadaja za wyczulenie na ksztalty w obrazie
         %przyklad - Test2
+    end
+    
+    function zdj=zwiekszWymiaryObrazu(obj, zdjecie, iloscPikseli)       
+         obj.wysokosc = obj.pokazWysokosc()+iloscPikseli*2+1;
+         obj.szerokosc = obj.pokazSzerokosc()+iloscPikseli*2+1;
+         zdj = zeros(obj.pokazWysokosc(), obj.pokazSzerokosc());
+             for h=iloscPikseli+1:obj.pokazWysokosc()
+                 for w=iloscPikseli+1:obj.pokazSzerokosc()
+                     if h>2*iloscPikseli+1 && w>2*iloscPikseli+1
+                         zdj(h-iloscPikseli-1,w-iloscPikseli-1) =...
+                         zdjecie(h-2*iloscPikseli-1, w-2*iloscPikseli-1);
+                     end
+                 end
+             end
     end
     
     function powierzchnie = obliczPowierzchniePorow(obj, a)

@@ -197,17 +197,8 @@ classdef AnalizatorZdjecSemGUI < matlab.apps.AppBase
 
         % Button pushed function: UtnijopisButton
         function UtnijopisButtonPushed(app, event)
-            %try
-                %if app.czyUcieto == false
                    app.zdjecieSem.utnijOpis();
                    imagesc(app.ImageAxes,app.zdjecieSem.pokazZdjecie());
-                %   app.czyUcieto = true;
-                %else
-                %    uialert(app.UIFigure, "Juz ucieto opis.", "Blad!");
-                %end
-            %catch ME
-            %    uialert(app.UIFigure, "Sproboj zaladowac zdjecie ponownie.", "Blad!");
-            %end 
         end
 
         % Button pushed function: ZamiennaszareButton
